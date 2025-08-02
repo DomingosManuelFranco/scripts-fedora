@@ -48,32 +48,6 @@ setup_system() {
     log "System setup completed!"
 }
 
-setup_multimedia() {
-    log "Setting up multimedia codecs..."
-    
-    # Install multimedia codecs
-    sudo dnf install -y \
-        gstreamer1-plugins-{bad-\*,good-\*,base} \
-        gstreamer1-plugin-openh264 \
-        gstreamer1-libav \
-        --exclude=gstreamer1-plugins-bad-free-devel
-    
-    sudo dnf install -y \
-        lame\* \
-        --exclude=lame-devel
-    
-    sudo dnf group upgrade -y --with-optional Multimedia
-    
-    # Install additional media tools
-    sudo dnf install -y \
-        ffmpeg \
-        vlc \
-        audacity \
-        gimp \
-        obs-studio
-    
-    log "Multimedia codecs setup completed!"
-}
 
 setup_flatpak_repos() {
     log "Setting up Flatpak and additional repositories..."
@@ -83,21 +57,6 @@ setup_flatpak_repos() {
     
     # Add Flathub repository
     flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    
-    # Install some useful Flatpak applications
-    log "Installing useful Flatpak applications..."
-    flatpak install -y flathub \
-        com.discordapp.Discord \
-        com.spotify.Client \
-        org.telegram.desktop \
-        com.slack.Slack \
-        org.signal.Signal \
-        org.videolan.VLC \
-        org.libreoffice.LibreOffice \
-        org.mozilla.Thunderbird \
-        com.github.johnfactotum.Foliate \
-        org.inkscape.Inkscape \
-        org.blender.Blender
     
     # Enable Terra repositories for additional packages
     sudo dnf copr enable -y terra/release

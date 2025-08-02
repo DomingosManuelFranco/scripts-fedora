@@ -37,7 +37,7 @@ fi
 echo -e "${BLUE}"
 cat << "EOF"
 ╔══════════════════════════════════════════════════════════════╗
-║                  Fedora Developer Setup                     ║
+║                  Fedora Developer Setup                      ║
 ║                Web & Mobile Development                      ║
 ╚══════════════════════════════════════════════════════════════╝
 EOF
@@ -46,47 +46,66 @@ echo -e "${NC}"
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Source other setup modules
-source "$SCRIPT_DIR/modules/system-setup.sh"
-source "$SCRIPT_DIR/modules/development-tools.sh"
-source "$SCRIPT_DIR/modules/web-development.sh"
-source "$SCRIPT_DIR/modules/mobile-development.sh"
-source "$SCRIPT_DIR/modules/theming-fonts.sh"
-source "$SCRIPT_DIR/modules/zsh-setup.sh"
-
 # Main setup function
 main() {
     log "Starting Fedora Developer Setup..."
     
-    # Ask user what to install
     echo "What would you like to set up? (Enter comma-separated numbers)"
     echo "1. System Updates & RPM Fusion"
-    echo "2. Multimedia Codecs"
-    echo "3. Development Tools (Git, Docker, etc.)"
-    echo "4. Web Development (Node.js, VS Code, etc.)"
-    echo "5. Mobile Development (Android Studio, Flutter, etc.)"
-    echo "6. Zsh Shell Setup with Oh My Zsh"
-    echo "7. Fonts & Theming (FiraCode, KDE themes, etc.)"
-    echo "8. Flatpak & Additional Repositories"
-    echo "9. All of the above"
-    
+    echo "2. Development Tools (Git, Docker, etc.)"
+    echo "3. Web Development (Node.js, VS Code, etc.)"
+    echo "4. Mobile Development (Android Studio, Flutter, etc.)"
+    echo "5. Zsh Shell Setup with Oh My Zsh"
+    echo "6. Fonts & Theming (FiraCode, KDE themes, etc.)"
+    echo "7. Flatpak & Additional Repositories"
+    echo "8. All of the above"
+
     read -p "Your choice: " choices
-    
+
     # Convert to array
     IFS=',' read -ra ADDR <<< "$choices"
-    
-    for choice in "${ADDR[@]}"; do
-        case $choice in
-            1|9) setup_system ;;
-            2|9) setup_multimedia ;;
-            3|9) setup_development_tools ;;
-            4|9) setup_web_development ;;
-            5|9) setup_mobile_development ;;
-            6|9) setup_zsh ;;
-            7|9) setup_theming_fonts ;;
-            8|9) setup_flatpak_repos ;;
-        esac
-    done
+
+    # Helper function to source modules safely
+    source_module() {
+        local module_name="$1"
+        local module_path="$SCRIPT_DIR/modules/$module_name"
+        if [ -f "$module_path" ]; then
+            # shellcheck source=/dev/null
+            source "$module_path"
+        else
+            error "Module file not found: $module_path"
+        fi
+    }
+
+    # Handle "All" choice
+    if [[ " ${ADDR[@]} " =~ " 8 " ]]; then
+        source_module "system-setup.sh"
+        setup_system
+        setup_flatpak_repos
+        source_module "development-tools.sh"
+        setup_development_tools
+        source_module "web-development.sh"
+        setup_web_development
+        source_module "mobile-development.sh"
+        setup_mobile_development
+        source_module "zsh-setup.sh"
+        setup_zsh
+        source_module "theming-fonts.sh"
+        setup_theming_fonts
+    else
+        for choice in "${ADDR[@]}"; do
+            case $choice in
+                1) source_module "system-setup.sh"; setup_system ;;
+                2) source_module "development-tools.sh"; setup_development_tools ;;
+                3) source_module "web-development.sh"; setup_web_development ;;
+                4) source_module "mobile-development.sh"; setup_mobile_development ;;
+                5) source_module "zsh-setup.sh"; setup_zsh ;;
+                6) source_module "theming-fonts.sh"; setup_theming_fonts ;;
+                7) source_module "system-setup.sh"; setup_flatpak_repos ;;
+                *) warn "Invalid choice: $choice. Skipping." ;;
+            esac
+        done
+    fi
     
     log "Setup completed! Please reboot your system to ensure all changes take effect."
     log "After reboot, you may need to:"
