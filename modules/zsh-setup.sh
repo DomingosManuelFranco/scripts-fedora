@@ -17,18 +17,30 @@ setup_zsh() {
     # Install Zsh plugins
     log "Installing Zsh plugins..."
     
+    # Configure Git to avoid authentication issues
+    git config --global credential.helper "" 2>/dev/null || true
+    git config --global url."https://github.com/".insteadOf git@github.com: 2>/dev/null || true
+    
     # zsh-autosuggestions
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    if ! git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null; then
+        warn "Failed to install zsh-autosuggestions plugin"
+    fi
     
     # zsh-syntax-highlighting
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    if ! git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null; then
+        warn "Failed to install zsh-syntax-highlighting plugin"
+    fi
     
     # zsh-completions
-    git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+    if ! git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions 2>/dev/null; then
+        warn "Failed to install zsh-completions plugin"
+    fi
     
     # Install Powerlevel10k theme
     log "Installing Powerlevel10k theme..."
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+    if ! git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k 2>/dev/null; then
+        warn "Failed to install Powerlevel10k theme, using default theme"
+    fi
     
     # Create .zshrc configuration
     log "Configuring .zshrc..."

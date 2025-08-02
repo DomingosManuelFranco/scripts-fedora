@@ -66,15 +66,21 @@ setup_theming_fonts() {
         
         # Install Orchis theme
         cd /tmp
-        git clone https://github.com/vinceliuice/Orchis-theme.git
-        cd Orchis-theme
-        ./install.sh
+        if git clone https://github.com/vinceliuice/Orchis-theme.git 2>/dev/null; then
+            cd Orchis-theme
+            ./install.sh || warn "Failed to install Orchis theme"
+        else
+            warn "Failed to download Orchis theme"
+        fi
         
         # Install Tela icon theme
         cd /tmp
-        git clone https://github.com/vinceliuice/Tela-icon-theme.git
-        cd Tela-icon-theme
-        ./install.sh
+        if git clone https://github.com/vinceliuice/Tela-icon-theme.git 2>/dev/null; then
+            cd Tela-icon-theme
+            ./install.sh || warn "Failed to install Tela icon theme"
+        else
+            warn "Failed to download Tela icon theme"
+        fi
     fi
     
     # For KDE Plasma
@@ -86,15 +92,21 @@ setup_theming_fonts() {
         
         # Install Orchis KDE theme
         cd /tmp
-        git clone https://github.com/vinceliuice/Orchis-kde.git
-        cd Orchis-kde
-        ./install.sh
+        if git clone https://github.com/vinceliuice/Orchis-kde.git 2>/dev/null; then
+            cd Orchis-kde
+            ./install.sh || warn "Failed to install Orchis KDE theme"
+        else
+            warn "Failed to download Orchis KDE theme"
+        fi
         
         # Install Tela icon theme for KDE
         cd /tmp
-        git clone https://github.com/vinceliuice/Tela-icon-theme.git
-        cd Tela-icon-theme
-        ./install.sh
+        if git clone https://github.com/vinceliuice/Tela-icon-theme.git 2>/dev/null; then
+            cd Tela-icon-theme
+            ./install.sh || warn "Failed to install Tela icon theme for KDE"
+        else
+            warn "Failed to download Tela icon theme for KDE"
+        fi
         
         log "KDE themes installed. Use System Settings > Appearance to apply them."
     fi
