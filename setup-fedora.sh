@@ -109,10 +109,10 @@ main() {
     
     log "Setup completed! Please reboot your system to ensure all changes take effect."
     log "After reboot, you may need to:"
-    log "- Configure your development tools"
+    log "- Source your .bashrc/.zshrc file or restart your terminal"
+    log "- Run Android Studio to complete SDK setup"
+    log "- Configure your development tools and editors"
     log "- Set up your Git credentials"
-    log "- Install additional extensions for your editors"
-    log "- Configure your shell preferences"
 }
 
 # Run main function
