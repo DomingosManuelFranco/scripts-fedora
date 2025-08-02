@@ -32,10 +32,40 @@ error() {
 
 # Check internet connectivity
 check_internet() {
-    if ! ping -c 1 google.com &>/dev/null; then
+    log "Checking internet connectivity..."
+    
+    # Try multiple methods to verify connectivity
+    local connectivity_ok=false
+    
+    # Method 1: Try to reach GitHub directly
+    if curl -s --max-time 5 --connect-timeout 3 https://github.com >/dev/null 2>&1; then
+        connectivity_ok=true
+        log "✅ GitHub connectivity confirmed"
+    fi
+    
+    # Method 2: Try Google DNS if GitHub failed
+    if ! $connectivity_ok && curl -s --max-time 5 --connect-timeout 3 https://8.8.8.8 >/dev/null 2>&1; then
+        connectivity_ok=true
+        log "✅ Internet connectivity confirmed via DNS"
+    fi
+    
+    # Method 3: Try to resolve DNS if direct IP failed
+    if ! $connectivity_ok && nslookup github.com >/dev/null 2>&1; then
+        connectivity_ok=true
+        log "✅ DNS resolution working"
+    fi
+    
+    if ! $connectivity_ok; then
         error "No internet connection detected. Please check your network and try again."
+        error "Troubleshooting steps:"
+        error "1. Check your internet connection"
+        error "2. Verify DNS settings"
+        error "3. Check firewall/proxy settings"
+        error "4. Try: curl -I https://github.com"
         exit 1
     fi
+    
+    log "✅ Internet connectivity verified"
 }
 
 # Clean Git credentials to avoid authentication issues
@@ -165,15 +195,19 @@ main() {
 EOF
     echo -e "${NC}"
     
-    # Check prerequisites
-    check_internet
+    # Check if user wants to skip connectivity check
+    if [[ "$1" == "--skip-check" ]] || [[ "$SKIP_CONNECTIVITY_CHECK" == "true" ]]; then
+        warn "Skipping connectivity check as requested"
+    else
+        # Check prerequisites
+        check_internet
+    fi
     
     # Install required tools
     log "Installing required tools..."
-    sudo dnf install -y curl wget unzip git 2>/dev/null || {
-        error "Failed to install prerequisites"
-        exit 1
-    }
+    if ! sudo dnf install -y curl wget unzip git 2>/dev/null; then
+        error "Failed to install prerequisites. Trying to continue anyway..."
+    fi
     
     # Create and enter installation directory
     mkdir -p "$INSTALL_DIR"

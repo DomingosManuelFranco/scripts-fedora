@@ -37,3 +37,4 @@ echo ""
 
 # Run the main setup script
 ./setup-fedora.sh
+
