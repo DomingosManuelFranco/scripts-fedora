@@ -82,11 +82,29 @@ Automated setup scripts for Fedora Linux targeting web and mobile developers. Th
 
 ## 🔧 Usage
 
-### Quick Start (Recommended)
+### Method 1: Direct Download (Recommended - No Git Required)
+
+```bash
+# Download and run directly (no authentication needed)
+curl -L https://raw.githubusercontent.com/DomingosManuelFranco/scripts-fedora/main/install.sh | bash
+```
+
+Or download and run manually:
+
+```bash
+# Download the installer
+curl -L https://raw.githubusercontent.com/DomingosManuelFranco/scripts-fedora/main/install.sh -o install.sh
+
+# Make it executable and run
+chmod +x install.sh
+./install.sh
+```
+
+### Method 2: Git Clone (Requires Git)
 
 ```bash
 # Clone the repository
-git clone https://github.com/woodzo/scripts-fedora.git
+git clone https://github.com/DomingosManuelFranco/scripts-fedora.git
 cd scripts-fedora
 
 # Make the script executable
@@ -95,6 +113,10 @@ chmod +x setup-fedora.sh
 # Run the setup script
 ./setup-fedora.sh
 ```
+
+./setup-fedora.sh
+
+````
 
 ### Interactive Setup
 
@@ -123,7 +145,7 @@ source modules/web-development.sh && setup_web_development
 
 # Just install fonts and theming
 source modules/theming-fonts.sh && setup_theming_fonts
-```
+````
 
 ## 📁 Project Structure
 

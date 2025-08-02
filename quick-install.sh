@@ -5,7 +5,7 @@
 
 set -e
 
-REPO_URL="https://github.com/woodzo/scripts-fedora.git"
+REPO_URL="https://github.com/DomingosManuelFranco/scripts-fedora.git"
 INSTALL_DIR="$HOME/fedora-dev-setup"
 
 echo "🚀 Fedora Developer Setup - Quick Installer"
